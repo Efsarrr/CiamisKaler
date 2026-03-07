@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Monitoring Cabang</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #f59e0b;
+    --accent2: #3b82f6;
+    --accent3: #10b981;
+    --danger: #ef4444;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --card-cms006: linear-gradient(135deg, #1a1040 0%, #0f172a 100%);
+    --card-cms009: linear-gradient(135deg, #0a1f1a 0%, #0f172a 100%);
+
+    --card-cms011: linear-gradient(135deg, #0a0f1a 0%, #0f172a 100%);
+    --card-cms012: linear-gradient(135deg, #1a0a12 0%, #0f172a 100%);
+    --card-cms013: linear-gradient(135deg, #101a0a 0%, #0f172a 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 20%, rgba(245,158,11,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 28px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,14,26,0.9);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .logo-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo-text span {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .date-badge {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .date-badge strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .month-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .month-selector select {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+  }
+
+  .month-selector select option { background: #111827; color: white; }
+
+  /* Summary Bar */
+  .summary-bar {
+    position: relative;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .summary-item {
+    padding: 20px 32px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .summary-item:last-child { border-right: none; }
+
+  .summary-item label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .summary-item .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .summary-item .sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Main Grid */
+  .main {
+    position: relative;
+    z-index: 5;
+    padding: 36px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 1200px) { .main { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .main { grid-template-columns: 1fr; padding: 20px; } }
+
+  /* Branch Card */
+  .branch-card {
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+  }
+
+  .branch-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .branch-card[data-id="cms006"] { background: var(--card-cms006); border-color: rgba(167,139,250,0.2); }
+  .branch-card[data-id="cms009"] { background: var(--card-cms009); border-color: rgba(16,185,129,0.2); }
+  .branch-card[data-id="cms011"] { background: var(--card-cms011); border-color: rgba(59,130,246,0.2); }
+  .branch-card[data-id="cms012"] { background: var(--card-cms012); border-color: rgba(236,72,153,0.2); }
+  .branch-card[data-id="cms013"] { background: var(--card-cms013); border-color: rgba(20,184,166,0.2); }
+
+  .card-header {
+    padding: 18px 22px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .branch-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .branch-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .branch-card[data-id="cms006"] .branch-dot { background: #a78bfa; box-shadow: 0 0 10px #a78bfa; }
+  .branch-card[data-id="cms009"] .branch-dot { background: #10b981; box-shadow: 0 0 10px #10b981; }
+  .branch-card[data-id="cms011"] .branch-dot { background: #3b82f6; box-shadow: 0 0 10px #3b82f6; }
+  .branch-card[data-id="cms012"] .branch-dot { background: #ec4899; box-shadow: 0 0 10px #ec4899; }
+  .branch-card[data-id="cms013"] .branch-dot { background: #14b8a6; box-shadow: 0 0 10px #14b8a6; }
+
+  .branch-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .branch-card[data-id="cms006"] .branch-name { color: #a78bfa; }
+  .branch-card[data-id="cms009"] .branch-name { color: #10b981; }
+  .branch-card[data-id="cms011"] .branch-name { color: #3b82f6; }
+  .branch-card[data-id="cms012"] .branch-name { color: #ec4899; }
+  .branch-card[data-id="cms013"] .branch-name { color: #14b8a6; }
+
+  .status-pill {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .status-pill.on-track { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+  .status-pill.at-risk { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+  .status-pill.behind { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+  /* Card Body */
+  .card-body {
+    padding: 18px 22px;
+  }
+
+  /* Input Grid */
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .input-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .input-item.full { grid-column: 1 / -1; }
+
+  .input-item label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .input-item input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+  }
+
+  .input-item input:focus {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .input-item input::placeholder { color: var(--muted); font-size: 13px; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 14px 0;
+  }
+
+  /* Results */
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .result-item {
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .result-item label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .result-item .result-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .result-item.full { grid-column: 1 / -1; }
+
+  .result-val.positive { color: #10b981; }
+  .result-val.negative { color: #ef4444; }
+  .result-val.neutral { color: var(--text); }
+  .result-val.warn { color: #f59e0b; }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-top: 14px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .progress-label span:last-child { color: var(--text); font-weight: 600; }
+
+  .progress-track {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+
+  .branch-card[data-id="cms006"] .progress-fill { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .branch-card[data-id="cms009"] .progress-fill { background: linear-gradient(90deg, #059669, #10b981); }
+  .branch-card[data-id="cms011"] .progress-fill { background: linear-gradient(90deg, #2563eb, #3b82f6); }
+  .branch-card[data-id="cms012"] .progress-fill { background: linear-gradient(90deg, #db2777, #ec4899); }
+  .branch-card[data-id="cms013"] .progress-fill { background: linear-gradient(90deg, #0d9488, #14b8a6); }
+
+  /* Footer */
+  .card-footer {
+    padding: 12px 22px 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .reset-btn {
+    font-size: 11px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  .reset-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+  /* Footer page */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 5;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+  }
+
+  /* Animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .branch-card {
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .branch-card:nth-child(1) { animation-delay: 0.05s; }
+  .branch-card:nth-child(2) { animation-delay: 0.1s; }
+  .branch-card:nth-child(3) { animation-delay: 0.15s; }
+  .branch-card:nth-child(4) { animation-delay: 0.2s; }
+  .branch-card:nth-child(5) { animation-delay: 0.25s; }
+  .branch-card:nth-child(6) { animation-delay: 0.3s; }
+
+  .summary-bar {
+    animation: fadeUp 0.4s ease both;
+    animation-delay: 0.02s;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-icon">💎</div>
+    <div class="logo-text">
+      <h1>CMS Dashboard</h1>
+      <span>Monitoring Kinerja Cabang Gadai</span>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="date-badge">
+      Hari ini: <strong id="todayDate">—</strong>
+    </div>
+    <div class="month-selector">
+      📅
+      <select id="monthSelect" onchange="updateMonthDays()">
+        <option value="0">Januari</option>
+        <option value="1">Februari</option>
+        <option value="2">Maret</option>
+        <option value="3">April</option>
+        <option value="4">Mei</option>
+        <option value="5">Juni</option>
+        <option value="6">Juli</option>
+        <option value="7">Agustus</option>
+        <option value="8">September</option>
+        <option value="9">Oktober</option>
+        <option value="10">November</option>
+        <option value="11">Desember</option>
+      </select>
+      <select id="yearSelect" onchange="updateMonthDays()">
+      </select>
+    </div>
+  </div>
+</header>
+
+<div class="summary-bar">
+  <div class="summary-item">
+    <label>Total Gadai Harian (Semua Cabang)</label>
+    <div class="val" id="sumGadai">Rp 0</div>
+    <div class="sub">Akumulasi input hari ini</div>
+  </div>
+  <div class="summary-item">
+    <label>Total Omset Bulanan</label>
+    <div class="val" id="sumOmset">Rp 0</div>
+    <div class="sub">Realisasi bulan berjalan</div>
+  </div>
+  <div class="summary-item">
+    <label>Rata-rata Pencapaian Target</label>
+    <div class="val" id="sumAvgPct">0%</div>
+    <div class="sub">Dari semua cabang aktif</div>
+  </div>
+</div>
+
+<div class="main" id="mainGrid">
+  <!-- Cards injected by JS -->
+</div>
+
+<footer>
+  CMS Dashboard &copy; 2025 — Data tersimpan di browser Anda secara lokal.
+</footer>
+
+<script>
+const BRANCHES = [
+  { id: 'cms006', label: 'CMS 006' },
+  { id: 'cms009', label: 'CMS 009' },
+  { id: 'cms011', label: 'CMS 011' },
+  { id: 'cms012', label: 'CMS 012' },
+  { id: 'cms013', label: 'CMS 013' },
+];
+
+// State: per branch
+const state = {};
+
+BRANCHES.forEach(b => {
+  state[b.id] = {
+    gadaiHarian: '',
+    omsetBulanan: '',
+    targetBulanan: '',
+  };
+});
+
+// Init date
+const now = new Date();
+document.getElementById('todayDate').textContent =
+  now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+// Fill year options
+const yearSel = document.getElementById('yearSelect');
+for (let y = now.getFullYear() - 1; y <= now.getFullYear() + 1; y++) {
+  const o = document.createElement('option');
+  o.value = y; o.textContent = y;
+  if (y === now.getFullYear()) o.selected = true;
+  yearSel.appendChild(o);
+}
+
+// Set current month
+document.getElementById('monthSelect').value = now.getMonth();
+
+function getDaysInMonth() {
+  const m = parseInt(document.getElementById('monthSelect').value);
+  const y = parseInt(document.getElementById('yearSelect').value);
+  return new Date(y, m + 1, 0).getDate();
+}
+
+function getSisaHari() {
+  const m = parseInt(document.getElementById('monthSelect').value);
+  const y = parseInt(document.getElementById('yearSelect').value);
+  const total = new Date(y, m + 1, 0).getDate();
+  const today = new Date();
+  if (today.getFullYear() === y && today.getMonth() === m) {
+    return total - today.getDate();
+  }
+  return total;
+}
+
+function getHariJalan() {
+  const m = parseInt(document.getElementById('monthSelect').value);
+  const y = parseInt(document.getElementById('yearSelect').value);
+  const today = new Date();
+  if (today.getFullYear() === y && today.getMonth() === m) {
+    return today.getDate();
+  }
+  return new Date(y, m + 1, 0).getDate();
+}
+
+function updateMonthDays() {
+  BRANCHES.forEach(b => renderCard(b));
+  updateSummary();
+}
+
+function fmt(val) {
+  if (!val && val !== 0) return '—';
+  return 'Rp ' + Number(val).toLocaleString('id-ID');
+}
+
+function getStatus(pct) {
+  if (pct >= 90) return { label: 'On Track', cls: 'on-track' };
+  if (pct >= 60) return { label: 'At Risk', cls: 'at-risk' };
+  return { label: 'Behind', cls: 'behind' };
+}
+
+function calcBranch(id) {
+  const d = state[id];
+  const target = parseFloat(d.targetBulanan) || 0;
+  const omset = parseFloat(d.omsetBulanan) || 0;
+  const gadai = parseFloat(d.gadaiHarian) || 0;
+  const sisaHari = getSisaHari();
+  const hariJalan = getHariJalan();
+  const totalHari = getDaysInMonth();
+
+  const pct = target > 0 ? Math.min((omset / target) * 100, 100) : 0;
+  const selisih = omset - target; // negative = kurang, positive = lebih
+  const rataHarian = hariJalan > 0 ? omset / hariJalan : 0;
+  const proyeksi = rataHarian * totalHari;
+
+  return { target, omset, gadai, pct, selisih, sisaHari, totalHari, hariJalan, proyeksi };
+}
+
+function renderCard(branch) {
+  const { id, label } = branch;
+  const c = calcBranch(id);
+  const s = state[id];
+  const status = getStatus(c.pct);
+
+  const selisihClass = c.selisih >= 0 ? 'positive' : 'negative';
+  const proyeksiClass = c.proyeksi >= c.target ? 'positive' : 'warn';
+
+  const card = document.querySelector(`.branch-card[data-id="${id}"]`);
+
+  // Update existing card content
+  card.querySelector('.status-pill').textContent = status.label;
+  card.querySelector('.status-pill').className = 'status-pill ' + status.cls;
+
+  card.querySelector(`[data-field="gadaiHarian"]`).value = s.gadaiHarian;
+  card.querySelector(`[data-field="omsetBulanan"]`).value = s.omsetBulanan;
+  card.querySelector(`[data-field="targetBulanan"]`).value = s.targetBulanan;
+
+  card.querySelector('[data-result="target"]').textContent = fmt(c.target);
+  card.querySelector('[data-result="omset"]').textContent = fmt(c.omset);
+  card.querySelector('[data-result="gadai"]').textContent = fmt(c.gadai);
+
+  const selEl = card.querySelector('[data-result="selisih"]');
+  selEl.textContent = c.target > 0 ? (c.selisih >= 0 ? '+' : '') + fmt(c.selisih) : '—';
+  selEl.className = 'result-val ' + (c.target > 0 ? selisihClass : 'neutral');
+
+  card.querySelector('[data-result="sisaHari"]').textContent = c.sisaHari + ' Hari';
+  card.querySelector('[data-result="totalHari"]').textContent = c.totalHari + ' Hari';
+
+  const proyEl = card.querySelector('[data-result="proyeksi"]');
+  proyEl.textContent = c.target > 0 ? fmt(Math.round(c.proyeksi)) : '—';
+  proyEl.className = 'result-val ' + (c.target > 0 ? proyeksiClass : 'neutral');
+
+  const pLabel = card.querySelector('.progress-label span:last-child');
+  pLabel.textContent = c.pct.toFixed(1) + '%';
+
+  card.querySelector('.progress-fill').style.width = c.pct + '%';
+}
+
+function buildCards() {
+  const grid = document.getElementById('mainGrid');
+  grid.innerHTML = '';
+
+  BRANCHES.forEach(branch => {
+    const { id, label } = branch;
+    const div = document.createElement('div');
+    div.className = 'branch-card';
+    div.setAttribute('data-id', id);
+    div.innerHTML = `
+      <div class="card-header">
+        <div class="branch-badge">
+          <div class="branch-dot"></div>
+          <div class="branch-name">${label}</div>
+        </div>
+        <span class="status-pill">—</span>
+      </div>
+      <div class="card-body">
+        <div class="input-grid">
+          <div class="input-item">
+            <label>💰 Gadai Harian (Rp)</label>
+            <input type="number" placeholder="0" data-field="gadaiHarian" data-id="${id}" oninput="handleInput(this)">
+          </div>
+          <div class="input-item">
+            <label>📈 Target Bulanan (Rp)</label>
+            <input type="number" placeholder="0" data-field="targetBulanan" data-id="${id}" oninput="handleInput(this)">
+          </div>
+          <div class="input-item full">
+            <label>🏦 Omset Bulanan / Hasil Akhir (Rp)</label>
+            <input type="number" placeholder="0" data-field="omsetBulanan" data-id="${id}" oninput="handleInput(this)">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="results-grid">
+          <div class="result-item">
+            <label>🎯 Target Bulanan</label>
+            <div class="result-val neutral" data-result="target">—</div>
+          </div>
+          <div class="result-item">
+            <label>📊 Realisasi Omset</label>
+            <div class="result-val neutral" data-result="omset">—</div>
+          </div>
+          <div class="result-item">
+            <label>💵 Gadai Hari Ini</label>
+            <div class="result-val neutral" data-result="gadai">—</div>
+          </div>
+          <div class="result-item">
+            <label>⚡ Selisih dari Target</label>
+            <div class="result-val neutral" data-result="selisih">—</div>
+          </div>
+          <div class="result-item">
+            <label>⏳ Sisa Hari Bulan Ini</label>
+            <div class="result-val warn" data-result="sisaHari">—</div>
+          </div>
+          <div class="result-item">
+            <label>📅 Total Hari Bulan Ini</label>
+            <div class="result-val neutral" data-result="totalHari">—</div>
+          </div>
+          <div class="result-item full">
+            <label>🔮 Proyeksi Akhir Bulan</label>
+            <div class="result-val neutral" data-result="proyeksi">—</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Pencapaian Target</span>
+            <span>0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="reset-btn" onclick="resetBranch('${id}')">↺ Reset Cabang</button>
+      </div>
+    `;
+    grid.appendChild(div);
+    renderCard(branch);
+  });
+}
+
+function handleInput(el) {
+  const id = el.getAttribute('data-id');
+  const field = el.getAttribute('data-field');
+  state[id][field] = el.value;
+  renderCard(BRANCHES.find(b => b.id === id));
+  updateSummary();
+}
+
+function resetBranch(id) {
+  state[id] = { gadaiHarian: '', omsetBulanan: '', targetBulanan: '' };
+  renderCard(BRANCHES.find(b => b.id === id));
+  updateSummary();
+}
+
+function updateSummary() {
+  let totalGadai = 0, totalOmset = 0, pcts = [];
+  BRANCHES.forEach(b => {
+    const d = state[b.id];
+    totalGadai += parseFloat(d.gadaiHarian) || 0;
+    totalOmset += parseFloat(d.omsetBulanan) || 0;
+    const target = parseFloat(d.targetBulanan) || 0;
+    const omset = parseFloat(d.omsetBulanan) || 0;
+    if (target > 0) pcts.push(Math.min((omset / target) * 100, 100));
+  });
+  document.getElementById('sumGadai').textContent = fmt(totalGadai);
+  document.getElementById('sumOmset').textContent = fmt(totalOmset);
+  const avg = pcts.length > 0 ? pcts.reduce((a, b) => a + b, 0) / pcts.length : 0;
+  document.getElementById('sumAvgPct').textContent = avg.toFixed(1) + '%';
+}
+
+// Init
+buildCards();
+updateSummary();
+</script>
+</body>
+</html>
