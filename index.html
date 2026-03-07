@@ -247,8 +247,8 @@ footer{text-align:center;padding:20px;color:var(--muted);font-size:12px;border-t
 </div>
 
 <div class="summary-bar">
-  <div class="sum-item"><label>Total Gadai Hari Ini (Semua Cabang)</label><div class="val" id="sumGadai">Rp 0</div><div class="sub">Akumulasi tanggal hari ini</div></div>
-  <div class="sum-item"><label>Total Omset Bulanan</label><div class="val" id="sumOmset">Rp 0</div><div class="sub">Seluruh cabang bulan ini</div></div>
+  <div class="sum-item"><label>Total Gadai Hari Ini (Semua Cabang)</label><div class="val" id="sumGadai">Transaksi 0</div><div class="sub">Akumulasi tanggal hari ini</div></div>
+  <div class="sum-item"><label>Total Omset Bulanan</label><div class="val" id="sumOmset">Transaksi 0</div><div class="sub">Seluruh cabang bulan ini</div></div>
   <div class="sum-item"><label>Rata-rata Pencapaian Target</label><div class="val" id="sumPct">0%</div><div class="sub">Cabang yang punya target</div></div>
 </div>
 
@@ -263,7 +263,7 @@ footer{text-align:center;padding:20px;color:var(--muted);font-size:12px;border-t
       <input type="number" id="editDay" min="1" max="31" placeholder="Tanggal (1–31)" style="margin-top:5px">
     </div>
     <div class="inp-group" style="margin-top:12px">
-      <label>Jumlah Gadai (Rp)</label>
+      <label>Jumlah Gadai (Transaksi)</label>
       <input type="number" id="editVal" placeholder="Nominal gadai" style="margin-top:5px">
     </div>
     <div class="modal-actions">
@@ -273,7 +273,7 @@ footer{text-align:center;padding:20px;color:var(--muted);font-size:12px;border-t
   </div>
 </div>
 
-<footer>CMS Dashboard © 2025 — Powered by Firebase Realtime Database 🔥</footer>
+<footer>CMS Dashboard © 2026 — Powered by Tabocide X Firebase Realtime Database 🔥</footer>
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -329,7 +329,7 @@ function getMY(){ return {m:parseInt(document.getElementById('monthSel').value),
 function getDIM(){ const {m,y}=getMY(); return new Date(y,m+1,0).getDate(); }
 function getSisaHari(){ const {m,y}=getMY();const t=new Date(y,m+1,0).getDate();if(now.getFullYear()===y&&now.getMonth()===m)return Math.max(0,t-now.getDate());return t; }
 function getHariJalan(){ const {m,y}=getMY();if(now.getFullYear()===y&&now.getMonth()===m)return now.getDate();return new Date(y,m+1,0).getDate(); }
-function fmt(v){ if(!v&&v!==0)return '—';return 'Rp '+Number(v).toLocaleString('id-ID'); }
+function fmt(v){ if(!v&&v!==0)return '—';return 'Transaksi '+Number(v).toLocaleString('id-ID'); }
 function getStatus(pct){ if(pct>=90)return{label:'On Track',cls:'on-track'};if(pct>=60)return{label:'At Risk',cls:'at-risk'};return{label:'Behind',cls:'behind'}; }
 
 function getOmset(id){
@@ -440,7 +440,7 @@ function buildCards(){
       <div class="card-body">
         <div class="target-row">
           <div class="inp-group">
-            <label>🎯 Target Bulanan (Rp)</label>
+            <label>🎯 Target Bulanan (Transaksi)</label>
             <input type="number" data-field="target" data-id="${id}" placeholder="Contoh: 50000000" oninput="window.onTargetInput(this)">
           </div>
         </div>
@@ -452,7 +452,7 @@ function buildCards(){
               <input type="number" class="inp-day" placeholder="${now.getDate()}" min="1" max="31">
             </div>
             <div class="inp-group">
-              <label>Jumlah Gadai (Rp)</label>
+              <label>Jumlah Gadai (Transaksi)</label>
               <input type="number" class="inp-gadai" placeholder="Nominal gadai">
             </div>
             <button class="add-btn" onclick="window.addGadai('${id}')">+ Tambah</button>
