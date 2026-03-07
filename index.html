@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <div id="live-clock" style="
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f5a623;
+  letter-spacing: 2px;
+  font-family: monospace;
+"></div>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Monitoring Cabang</title>
@@ -26,7 +33,15 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+function updateClock() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
   body {
     background: var(--bg);
     color: var(--text);
